@@ -246,10 +246,12 @@ frappe.ui.form.on("Leave Application", {
 					} else {
 						frm.set_value("half_day_date", "");
 						frappe.msgprint(
-							__("Half Day Date must be between From Date and To Date and should not be a holiday."),
-							);
+							__(
+								"Half Day Date must be between From Date and To Date and should not be a holiday.",
+							),
+						);
 					}
-				}
+				},
 			});
 		}
 	},
