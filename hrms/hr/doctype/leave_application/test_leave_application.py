@@ -900,6 +900,7 @@ class TestLeaveApplication(HRMSTestSuite):
 		leave_application.cancel()
 		self.assertFalse(frappe.db.exists("Leave Ledger Entry", {"transaction_name": leave_application.name}))
 
+	@assign_holiday_list("Holiday List w/o Weekly Offs", "_Test Company")
 	def test_ledger_entry_creation_on_intermediate_allocation_expiry(self):
 		employee = get_employee()
 		leave_type = create_leave_type(
@@ -911,7 +912,7 @@ class TestLeaveApplication(HRMSTestSuite):
 
 		create_carry_forwarded_allocation(employee, leave_type)
 
-		half_day_date = self.get_non_holiday_date(employee.name, add_days(nowdate(), -3))
+		half_day_date = add_days(nowdate(), -3)
 		from_date = add_days(half_day_date, 0)
 		to_date = add_days(half_day_date, 10)
 
@@ -940,7 +941,7 @@ class TestLeaveApplication(HRMSTestSuite):
 		self.assertEqual(leave_ledger_entry[0].employee, leave_application.employee)
 		self.assertEqual(leave_ledger_entry[0].leave_type, leave_application.leave_type)
 		self.assertEqual(leave_ledger_entry[0].leaves, -8.5)
-		self.assertEqual(leave_ledger_entry[1].leaves, -2)
+		self.assertEqual(leave_ledger_entry[1].leaves, -2.0)
 
 	def test_leave_application_creation_after_expiry(self):
 		# test leave balance for carry forwarded allocation

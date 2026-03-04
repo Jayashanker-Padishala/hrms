@@ -889,6 +889,16 @@ class LeaveApplication(Document, PWANotificationsMixin):
 			frappe.db.get_single_value("HR Settings", "prevent_self_leave_approval"),
 		)
 
+	@frappe.whitelist()
+	def get_half_day_validation(self) -> bool:
+		if is_holiday(employee=self.employee, date=self.half_day_date):
+			return False
+
+		if not (getdate(self.from_date) <= getdate(self.half_day_date) <= getdate(self.to_date)):
+			return False
+
+		return True
+
 
 def get_allocation_expiry_for_cf_leaves(
 	employee: str, leave_type: str, to_date: datetime.date, from_date: datetime.date
@@ -910,17 +920,6 @@ def get_allocation_expiry_for_cf_leaves(
 	).run()
 
 	return expiry[0][0] if expiry else ""
-
-
-@frappe.whitelist()
-def get_half_day_validation(employee, from_date, to_date, half_day_date):
-	if is_holiday(employee=employee, date=half_day_date):
-		return False
-
-	if not (getdate(from_date) <= getdate(half_day_date) <= getdate(to_date)):
-		return False
-
-	return True
 
 
 @frappe.whitelist()
