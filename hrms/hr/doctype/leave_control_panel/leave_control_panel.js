@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Leave Control Panel", {
 	setup: function (frm) {
-		frm.set_value("company", frappe.defaults.get_default("company"))
+		frm.set_value("company", frappe.defaults.get_default("company"));
 		frm.trigger("set_query");
 		frm.trigger("set_leave_details");
 		hrms.setup_employee_filter_group(frm);
