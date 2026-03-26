@@ -59,7 +59,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-24 16:41:30.040870",
+ "modified": "2026-03-26 16:12:56.854860",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Job Opening Template",
@@ -81,6 +81,15 @@
   {
    "read": 1,
    "role": "HR User"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "write": 1
   }
  ],
  "row_format": "Dynamic",

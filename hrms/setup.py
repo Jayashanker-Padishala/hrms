@@ -1,12 +1,14 @@
 import os
 
 import frappe
+from frappe.core.doctype.custom_docperm.custom_docperm import update_custom_docperm
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.desk.page.setup_wizard.install_fixtures import (
 	_,  # NOTE: this is not the real translation function
 )
 from frappe.desk.page.setup_wizard.setup_wizard import make_records
 from frappe.installer import update_site_config
+from frappe.permissions import add_permission
 
 from hrms.overrides.company import delete_company_fixtures
 
@@ -859,3 +861,24 @@ def get_salary_slip_loan_fields():
 			},
 		],
 	}
+
+
+# Add default permission
+def add_docperms():
+	role_permissions = {
+		"HR User": {
+			"Role": {"read": 1},
+			"Currency": {"read": 1},
+		},
+		"HR Manager": {
+			"Role": {"read": 1},
+			"Currency": {"read": 1},
+			"Email Account": {"read": 1},
+		},
+	}
+
+	for role, permissions in role_permissions.items():
+		for doctype, ptypes in permissions.items():
+			docperm = add_permission(doctype, role)
+			if docperm:
+				update_custom_docperm(docperm, ptypes)
