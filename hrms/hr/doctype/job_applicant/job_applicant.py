@@ -42,7 +42,7 @@ class JobApplicant(Document):
 		resume_link: DF.Data | None
 		source: DF.Link | None
 		source_name: DF.Link | None
-		status: DF.Literal["Open", "Replied", "Rejected", "Hold", "Accepted"]
+		status: DF.Literal["Open", "Replied", "Shortlisted", "Rejected", "Hold", "Accepted"]
 		upper_range: DF.Currency
 	# end: auto-generated types
 
