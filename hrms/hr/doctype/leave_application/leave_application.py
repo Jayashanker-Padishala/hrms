@@ -197,22 +197,7 @@ class LeaveApplication(Document, PWANotificationsMixin):
 		if self.from_date and self.to_date and (getdate(self.to_date) < getdate(self.from_date)):
 			frappe.throw(_("To date cannot be before from date"))
 
-		if (
-			self.half_day
-			and self.half_day_date
-			and (
-				getdate(self.half_day_date) < getdate(self.from_date)
-				or getdate(self.half_day_date) > getdate(self.to_date)
-			)
-		):
-			frappe.throw(_("Half Day Date should be between From Date and To Date"))
-
-		if (
-			self.half_day
-			and self.half_day_date
-			and is_holiday(employee=self.employee, date=self.half_day_date)
-		):
-			frappe.throw(_("Half Day Date cannot be a holiday"))
+		self.validate_half_day_date()
 
 		if not is_lwp(self.leave_type):
 			self.validate_dates_across_allocation()
@@ -890,14 +875,12 @@ class LeaveApplication(Document, PWANotificationsMixin):
 		)
 
 	@frappe.whitelist()
-	def get_half_day_validation(self) -> bool:
+	def validate_half_day_date(self) -> bool:
 		if is_holiday(employee=self.employee, date=self.half_day_date):
-			return False
+			frappe.throw(_("Half Day Date cannot be a holiday"))
 
 		if not (getdate(self.from_date) <= getdate(self.half_day_date) <= getdate(self.to_date)):
-			return False
-
-		return True
+			frappe.throw(_("Half Day Date should be between From Date and To Date"))
 
 
 def get_allocation_expiry_for_cf_leaves(

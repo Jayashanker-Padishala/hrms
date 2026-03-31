@@ -231,20 +231,18 @@ frappe.ui.form.on("Leave Application", {
 		}
 	},
 	validate_half_day_date: function (frm) {
-		if (frm.doc.half_day_date) {
-			return frm.call("get_half_day_validation", {}, function (r) {
-				if (r && r.message) {
-					frm.trigger("calculate_total_days");
-				} else {
-					frm.set_value("half_day_date", "");
-					frappe.msgprint(
-						__(
-							"Half Day Date must be between From Date and To Date and should not be a holiday.",
-						),
-					);
-				}
-			});
+		if (!frm.doc.half_day_date) {
+			return;
 		}
+
+		return frm
+			.call("validate_half_day_date")
+			.then(() => {
+				frm.trigger("calculate_total_days");
+			})
+			.catch(() => {
+				frm.set_value("half_day_date", "");
+			});
 	},
 	calculate_total_days: function (frm) {
 		if (frm.doc.from_date && frm.doc.to_date && frm.doc.employee && frm.doc.leave_type) {
