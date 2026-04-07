@@ -12,7 +12,7 @@ hrms.HierarchyChart = class {
 		this.method = method;
 		this.doctype = doctype;
 
-		this.page.main.addClass("frappe-card");
+		this.page.main.addClass("frappe-card hierarchy-chart-main");
 
 		this.nodes = {};
 		this.setup_node_class();
@@ -97,7 +97,16 @@ hrms.HierarchyChart = class {
 
 		company.refresh();
 		$(`[data-fieldname="company"]`).trigger("change");
-		$(`[data-fieldname="company"] .link-field`).css("z-index", 2);
+		$(`[data-fieldname="company"] .link-field`).addClass("hierarchy-company-link-field");
+	}
+
+	set_main_state(state) {
+		const state_classes = "hierarchy-main-chart hierarchy-main-empty hierarchy-main-export";
+		this.page.main.removeClass(state_classes);
+
+		if (state) {
+			this.page.main.addClass(state);
+		}
 	}
 
 	setup_actions() {
@@ -125,14 +134,7 @@ hrms.HierarchyChart = class {
 
 	export_chart() {
 		frappe.dom.freeze(__("Exporting..."));
-		this.page.main.css({
-			"min-height": "",
-			"max-height": "",
-			overflow: "visible",
-			position: "fixed",
-			left: "0",
-			top: "0",
-		});
+		this.set_main_state("hierarchy-main-export");
 
 		$(".node-card").addClass("exported");
 
@@ -151,11 +153,10 @@ hrms.HierarchyChart = class {
 				a.click();
 			})
 			.finally(() => {
+				this.set_main_state("hierarchy-main-chart");
+				$(".node-card").removeClass("exported");
 				frappe.dom.unfreeze();
 			});
-
-		this.setup_page_style();
-		$(".node-card").removeClass("exported");
 	}
 
 	setup_hierarchy() {
@@ -219,13 +220,7 @@ hrms.HierarchyChart = class {
 			.then((r) => {
 				if (r.message.length) {
 					me.page.body.find("#hierarchy-empty-root").remove();
-
-					me.page.main.css({
-						"min-height": "300px",
-						"max-height": "700px",
-						overflow: "auto",
-						position: "relative",
-					});
+					me.set_main_state("hierarchy-main-chart");
 
 					let expand_node;
 					let node;
@@ -254,39 +249,6 @@ hrms.HierarchyChart = class {
 					if (!expanded_view) {
 						me.expand_node(expand_node);
 					}
-				} else {
-					me.page.body.find("#hierarchy-empty-root").remove();
-					const empty_html = frappe.render_template("hierarchy_empty_state", {
-						doctype: me.doctype,
-						company: me.company,
-						can_create: frappe.model.can_create(me.doctype),
-						device_type: "desktop",
-					});
-
-					$("#hierarchy-chart-wrapper").remove();
-					me.page.body.append(empty_html);
-
-					me.page.main.css({
-						"min-height": "100%",
-						"max-height": "100%",
-					});
-
-					(function () {
-						const root = document.getElementById("hierarchy-empty-root");
-						if (!root) return;
-						try {
-							const rect = root.getBoundingClientRect();
-							const windowHeight = window.innerHeight;
-							const height = Math.max(300, Math.floor(windowHeight - rect.top - 20));
-							root.style.height = height + "px";
-							root.style.overflow = "auto";
-							root.style.position = "relative";
-						} catch (e) {}
-					})();
-					me.page.body.find("#add-doc-btn").on("click", () => {
-						frappe.route_options = { company: me.company };
-						frappe.new_doc(me.doctype);
-					});
 				}
 			});
 	}

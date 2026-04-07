@@ -11,7 +11,7 @@ hrms.HierarchyChartMobile = class {
 		this.method = method;
 		this.doctype = doctype;
 
-		this.page.main.addClass("frappe-card");
+		this.page.main.addClass("frappe-card hierarchy-chart-main");
 
 		this.nodes = {};
 		this.setup_node_class();
@@ -95,6 +95,16 @@ hrms.HierarchyChartMobile = class {
 
 		company.refresh();
 		$(`[data-fieldname="company"]`).trigger("change");
+		$(`[data-fieldname="company"] .link-field`).addClass("hierarchy-company-link-field");
+	}
+
+	set_main_state(state) {
+		const state_classes = "hierarchy-main-mobile-chart hierarchy-main-mobile-empty";
+		this.page.main.removeClass(state_classes);
+
+		if (state) {
+			this.page.main.addClass(state);
+		}
 	}
 
 	make_svg_markers() {
@@ -150,13 +160,7 @@ hrms.HierarchyChartMobile = class {
 			.then((r) => {
 				if (r.message.length) {
 					me.page.body.find("#hierarchy-empty-root").remove();
-
-					me.page.main.css({
-						"min-height": "300px",
-						"max-height": "600px",
-						overflow: "auto",
-						position: "relative",
-					});
+					me.set_main_state("hierarchy-main-mobile-chart");
 
 					let root_level = me.$hierarchy.find(".root-level");
 					root_level.empty();
@@ -173,40 +177,6 @@ hrms.HierarchyChartMobile = class {
 							connections: data.connections,
 							is_root: true,
 						});
-					});
-				} else {
-					me.page.body.find("#hierarchy-empty-root").remove();
-					me.page.main.css({
-						"min-height": "100%",
-						"max-height": "100%",
-						overflow: "auto",
-						position: "relative",
-					});
-
-					const empty = frappe.render_template("hierarchy_empty_state", {
-						doctype: me.doctype,
-						company: me.company,
-						can_create: frappe.model.can_create(me.doctype),
-						device_type: "mobile",
-					});
-
-					me.page.main.append(empty);
-
-					(function () {
-						const root = document.getElementById("hierarchy-empty-root");
-						if (!root) return;
-						try {
-							const rect = root.getBoundingClientRect();
-							const windowHeight = window.innerHeight;
-							const height = Math.max(300, Math.floor(windowHeight - rect.top - 20));
-							root.style.height = height + "px";
-							root.style.overflow = "auto";
-							root.style.position = "relative";
-						} catch (e) {}
-					})();
-					me.page.body.find("#add-doc-btn").on("click", () => {
-						frappe.route_options = { company: me.company };
-						frappe.new_doc(me.doctype);
 					});
 				}
 			});
