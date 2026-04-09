@@ -7,7 +7,6 @@ from frappe.desk.page.setup_wizard.install_fixtures import (
 	_,  # NOTE: this is not the real translation function
 )
 from frappe.desk.page.setup_wizard.setup_wizard import make_records
-from frappe.installer import update_site_config
 from frappe.permissions import add_permission
 
 from hrms.overrides.company import delete_company_fixtures
