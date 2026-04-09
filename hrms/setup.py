@@ -1,13 +1,12 @@
 import os
 
 import frappe
-from frappe.core.doctype.custom_docperm.custom_docperm import update_custom_docperm
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.desk.page.setup_wizard.install_fixtures import (
 	_,  # NOTE: this is not the real translation function
 )
 from frappe.desk.page.setup_wizard.setup_wizard import make_records
-from frappe.permissions import add_permission
+from frappe.permissions import add_permission, update_permission_property
 
 from hrms.overrides.company import delete_company_fixtures
 
@@ -22,6 +21,7 @@ def after_install():
 	set_single_defaults()
 	create_default_role_profiles()
 	run_post_install_patches()
+	add_default_hr_permissions()
 
 
 def before_uninstall():
@@ -854,8 +854,8 @@ def get_salary_slip_loan_fields():
 	}
 
 
-# Add default permission
-def add_docperms():
+# Add default permission for hr roles
+def add_default_hr_permissions():
 	role_permissions = {
 		"HR User": {
 			"Role": {"read": 1},
@@ -870,9 +870,10 @@ def add_docperms():
 
 	for role, permissions in role_permissions.items():
 		for doctype, ptypes in permissions.items():
-			docperm = add_permission(doctype, role)
-			if docperm:
-				update_custom_docperm(docperm, ptypes)
+			add_permission(doctype, role)
+
+			for ptype, value in ptypes.items():
+				update_permission_property(doctype, role, permlevel=0, ptype=ptype, value=value)
 
 
 def make_people_workspace_standard():
