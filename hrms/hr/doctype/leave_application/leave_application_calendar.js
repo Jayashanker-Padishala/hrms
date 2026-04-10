@@ -233,12 +233,16 @@ function set_allowed_leave_types_query(quick_entry, allowed_leave_types) {
 	quick_entry._allowed_leave_types = allowed;
 
 	quick_entry.set_query("leave_type", () => {
-		if (!quick_entry._allowed_leave_types?.length) {
-			return {};
-		}
-
 		return {
-			filters: [["leave_type_name", "in", quick_entry._allowed_leave_types]],
+			filters: [
+				[
+					"leave_type_name",
+					"in",
+					quick_entry._allowed_leave_types?.length
+						? quick_entry._allowed_leave_types
+						: ["__no_allowed_leave_type__"],
+				],
+			],
 		};
 	});
 }
@@ -292,7 +296,7 @@ function refresh_allowed_leave_types(quick_entry) {
 }
 
 function format_metric(value) {
-	return Number(value || 0).toFixed(1);
+	return `${value ?? 0}`;
 }
 
 function refresh_leave_metrics(quick_entry) {
@@ -448,6 +452,9 @@ function setup_full_form_action(quick_entry) {
 
 function sync_leave_approver(quick_entry, employee, options = {}) {
 	const { clear_existing = false } = options;
+	const request_id = (quick_entry._leaveApproverRequestId || 0) + 1;
+	quick_entry._leaveApproverRequestId = request_id;
+	const is_latest_request = () => quick_entry._leaveApproverRequestId === request_id;
 
 	if (clear_existing) {
 		set_leave_approver_value(quick_entry, "");
@@ -461,9 +468,17 @@ function sync_leave_approver(quick_entry, employee, options = {}) {
 			},
 		})
 		.then((mandatory_response) => {
+			if (!is_latest_request()) {
+				return;
+			}
+
 			const is_mandatory = Number(mandatory_response?.message);
 
 			if (!employee) {
+				if (!is_latest_request()) {
+					return;
+				}
+
 				set_leave_approver_value(quick_entry, "");
 				return { is_mandatory, leave_approver: "" };
 			}
@@ -476,6 +491,10 @@ function sync_leave_approver(quick_entry, employee, options = {}) {
 					},
 				})
 				.then((r) => {
+					if (!is_latest_request()) {
+						return;
+					}
+
 					const leave_approver = set_leave_approver_value(quick_entry, r?.message || "");
 					return { is_mandatory, leave_approver };
 				});
@@ -528,10 +547,13 @@ frappe.views.calendar["Leave Application"] = {
 			center: "title",
 			right: "month",
 		},
+		dateClick: function (info) {
+			info.jsEvent?.preventDefault?.();
+			info.jsEvent?.stopPropagation?.();
+			return false;
+		},
 		select: async function (info) {
-			const milliseconds = info.end - info.start;
-
-			if (info.view.type === "dayGridMonth" && milliseconds === 86400000) {
+			if (info.view.type !== "dayGridMonth") {
 				return;
 			}
 
