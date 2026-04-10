@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: frappe\n"
 "Report-Msgid-Bugs-To: contact@frappe.io\n"
 "POT-Creation-Date: 2026-04-05 09:45+0000\n"
-"PO-Revision-Date: 2026-04-06 14:49\n"
+"PO-Revision-Date: 2026-04-10 15:29\n"
 "Last-Translator: contact@frappe.io\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -2880,7 +2880,7 @@ msgstr "Förskott Översikt"
 #: hrms/hr/workspace/hr_setup/hr_setup.json
 #: hrms/hr/workspace/tenure/tenure.json hrms/workspace_sidebar/tenure.json
 msgid "Employee Analytics"
-msgstr "Analys"
+msgstr "Personal Statistik"
 
 #. Name of a DocType
 #. Label of a Link in the Shift & Attendance Workspace
@@ -3604,7 +3604,7 @@ msgstr "Ange ett värde som inte är noll för att justera."
 
 #: hrms/hr/doctype/hr_settings/hr_settings.js:34
 msgid "Enter the Standard Working Hours for a normal work day. These hours will be used in calculations of reports such as Employee Hours Utilization and Project Profitability analysis."
-msgstr "Ange Standard Arbetstid för arbetsdag. Dessa timmar kommer att användas i beräkningar av rapporter som t. ex. Personal Tid Användning och Projekt Resultat Analys."
+msgstr "Ange Standard Arbetstid för arbetsdag. Dessa timmar kommer att användas i beräkningar av rapporter som t. ex. Personal Tid Användning och Projekt Resultat Statistik."
 
 #. Description of the 'Days to Reverse' (Float) field in DocType 'Payroll
 #. Correction'
@@ -8436,7 +8436,7 @@ msgstr "Rekrytering"
 #: hrms/hr/workspace/recruitment/recruitment.json
 #: hrms/workspace_sidebar/recruitment.json
 msgid "Recruitment Analytics"
-msgstr "Rekrytering Analys"
+msgstr "Rekrytering Statistik"
 
 #. Option for the 'Adjustment Type' (Select) field in DocType 'Leave
 #. Adjustment'
