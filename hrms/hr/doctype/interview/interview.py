@@ -32,8 +32,8 @@ class Interview(Document):
 		expected_average_rating: DF.Rating
 		from_time: DF.Time
 		interview_details: DF.Table[InterviewDetail]
-		interview_round: DF.Link
 		interview_summary: DF.Text | None
+		interview_type: DF.Link
 		job_applicant: DF.Link
 		job_opening: DF.Link | None
 		reminded: DF.Check
