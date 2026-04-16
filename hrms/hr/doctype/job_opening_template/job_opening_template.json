@@ -111,7 +111,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-09 18:30:25.105332",
+ "modified": "2026-04-16 13:05:04.934642",
  "modified_by": "Administrator",
  "module": "HR",
  "name": "Job Opening Template",
@@ -138,8 +138,10 @@
    "write": 1
   },
   {
+   "create": 1,
+   "read": 1,
    "role": "HR User",
-   "select": 1
+   "write": 1
   }
  ],
  "row_format": "Dynamic",
