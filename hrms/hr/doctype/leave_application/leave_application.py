@@ -947,7 +947,7 @@ def get_leave_metrics_and_details(
 	half_day: int | str | None = None,
 	half_day_date: datetime.date | str | None = None,
 ) -> dict:
-	"""Returns both number of leave days and leave allocation details in a single call"""
+	frappe.has_permission("Employee", "read", employee, throw=True)
 	number_of_leave_days = get_number_of_leave_days(
 		employee, leave_type, from_date, to_date, half_day, half_day_date
 	)
@@ -1545,7 +1545,7 @@ def on_doctype_update():
 
 @frappe.whitelist()
 def get_leave_approver_and_mandatory(employee: str) -> dict:
-	"""Returns both leave approver and mandatory approval status in a single call"""
+	frappe.has_permission("Employee", "read", employee, throw=True)
 	mandatory = frappe.db.get_single_value("HR Settings", "leave_approver_mandatory_in_leave_application")
 
 	return {
