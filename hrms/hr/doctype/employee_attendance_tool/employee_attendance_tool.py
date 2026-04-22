@@ -34,7 +34,29 @@ class EmployeeAttendanceTool(Document):
 		status: DF.Literal["", "Present", "Absent", "Half Day", "Work From Home"]
 	# end: auto-generated types
 
-	pass
+	def save(self):
+		return
+
+	@staticmethod
+	def get_list(args):
+		pass
+
+	@staticmethod
+	def get_count(args):
+		pass
+
+	@staticmethod
+	def get_stats(args):
+		pass
+
+	def db_insert(self, *args, **kwargs):
+		pass
+
+	def db_update(self, *args, **kwargs):
+		pass
+
+	def delete(self):
+		pass
 
 
 @frappe.whitelist()
